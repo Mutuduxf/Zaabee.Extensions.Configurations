@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Version>1.0.0</Version>
+    <Authors>Mutuduxf</Authors>
+    <Company>Mutuduxf</Company>
+    <PackageProjectUrl>https://github.com/Mutuduxf/Zaabee.Extensions.Configurations/tree/master/Zaabee.Extensions.Configuration.Consul</PackageProjectUrl>
+    <PackagelicenseUrl>https://raw.githubusercontent.com/Mutuduxf/Zaabee.Extensions.Configurations/master/LICENSE</PackagelicenseUrl>
+    <Description>The configuration extensions base by consul.</Description>
+    <PackageTags>Zaabee configuration extensions consul</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Consul" Version="0.7.2.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
