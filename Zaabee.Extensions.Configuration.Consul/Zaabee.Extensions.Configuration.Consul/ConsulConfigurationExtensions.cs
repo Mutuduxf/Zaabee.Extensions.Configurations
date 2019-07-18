@@ -7,11 +7,19 @@ namespace Zaabee.Extensions.Configuration.Consul
 {
     public static class ConsulConfigurationExtensions
     {
-        public static IConfigurationBuilder AddConsul(this IConfigurationBuilder builder,
+        public static IConfigurationBuilder AddConsulFolder(this IConfigurationBuilder builder,
             Action<ConsulClientConfiguration> configOverride = null, Action<HttpClient> clientOverride = null,
-            Action<HttpClientHandler> handlerOverride = null, string folder = "/", string key = null)
+            Action<HttpClientHandler> handlerOverride = null, string folder = "/")
         {
-            builder.Add(new ConsulConfigurationSource(configOverride, clientOverride, handlerOverride, folder, key));
+            builder.Add(new ConsulConfigurationSource(configOverride, clientOverride, handlerOverride, folder));
+            return builder;
+        }
+
+        public static IConfigurationBuilder AddConsulFile(this IConfigurationBuilder builder,
+            Action<ConsulClientConfiguration> configOverride = null, Action<HttpClient> clientOverride = null,
+            Action<HttpClientHandler> handlerOverride = null, string key = null)
+        {
+            builder.Add(new ConsulConfigurationSource(configOverride, clientOverride, handlerOverride, key: key));
             return builder;
         }
     }

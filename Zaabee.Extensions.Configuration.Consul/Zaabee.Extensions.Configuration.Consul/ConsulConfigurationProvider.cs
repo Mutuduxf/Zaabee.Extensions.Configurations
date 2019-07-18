@@ -22,29 +22,17 @@ namespace Zaabee.Extensions.Configuration.Consul
 
         public override void Load()
         {
-            if (!string.IsNullOrEmpty(_folder))
-            {
-                var result = _consulClient.KV.List(_folder).Result;
-                if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response == null) return;
-                foreach (var item in result.Response.Where(p => p.Value != null))
-                {
-                    var json = Encoding.UTF8.GetString(item.Value);
-                    using (var memoryStream = new MemoryStream())
-                    using (var streamWriter = new StreamWriter(memoryStream))
-                    {
-                        streamWriter.Write(json);
-                        streamWriter.Flush();
-                        memoryStream.Position = 0;
-                        SetKvPair(memoryStream);
-                    }
-                }
-            }
+            if (!string.IsNullOrEmpty(_folder)) LoadDir();
+            if (!string.IsNullOrEmpty(_key)) LoadFile();
+        }
 
-            if (!string.IsNullOrEmpty(_key))
+        private void LoadDir()
+        {
+            var result = _consulClient.KV.List(_folder).Result;
+            if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response == null) return;
+            foreach (var item in result.Response.Where(p => p.Value != null))
             {
-                var result = _consulClient.KV.Get(_key).Result;
-                if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response?.Value == null) return;
-                var json = Encoding.UTF8.GetString(result.Response.Value);
+                var json = Encoding.UTF8.GetString(item.Value);
                 using (var memoryStream = new MemoryStream())
                 using (var streamWriter = new StreamWriter(memoryStream))
                 {
@@ -53,6 +41,21 @@ namespace Zaabee.Extensions.Configuration.Consul
                     memoryStream.Position = 0;
                     SetKvPair(memoryStream);
                 }
+            }
+        }
+
+        private void LoadFile()
+        {
+            var result = _consulClient.KV.Get(_key).Result;
+            if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response?.Value == null) return;
+            var json = Encoding.UTF8.GetString(result.Response.Value);
+            using (var memoryStream = new MemoryStream())
+            using (var streamWriter = new StreamWriter(memoryStream))
+            {
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                memoryStream.Position = 0;
+                SetKvPair(memoryStream);
             }
         }
 
