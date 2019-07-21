@@ -22,48 +22,35 @@ namespace Zaabee.Extensions.Configuration.Consul
 
         public override void Load()
         {
-            if (!string.IsNullOrEmpty(_folder)) LoadDir();
-            if (!string.IsNullOrEmpty(_key)) LoadFile();
-        }
-
-        private void LoadDir()
-        {
-            var result = _consulClient.KV.List(_folder).Result;
-            if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response == null) return;
-            foreach (var item in result.Response.Where(p => p.Value != null))
+            var folder = _folder ?? "/";
+            if (!string.IsNullOrWhiteSpace(_key))
             {
-                var json = Encoding.UTF8.GetString(item.Value);
-                using (var memoryStream = new MemoryStream())
-                using (var streamWriter = new StreamWriter(memoryStream))
-                {
-                    streamWriter.Write(json);
-                    streamWriter.Flush();
-                    memoryStream.Position = 0;
-                    SetKvPair(memoryStream);
-                }
+                var queryResult = _consulClient.KV.Get($"{folder}/{_key}").Result;
+                if (queryResult == null || queryResult.StatusCode != HttpStatusCode.OK || queryResult.Response?.Value == null) return;
+                SetKvPair(queryResult.Response.Value);
+            }
+            else
+            {
+                var queryResult = _consulClient.KV.List(_folder).Result;
+                if (queryResult == null || queryResult.StatusCode != HttpStatusCode.OK || queryResult.Response == null) return;
+                foreach (var item in queryResult.Response.Where(p => p.Value != null))
+                    SetKvPair(item.Value);
             }
         }
 
-        private void LoadFile()
+        private void SetKvPair(byte[] bytes)
         {
-            var result = _consulClient.KV.Get(_key).Result;
-            if (result == null || result.StatusCode != HttpStatusCode.OK || result.Response?.Value == null) return;
-            var json = Encoding.UTF8.GetString(result.Response.Value);
+            var json = Encoding.UTF8.GetString(bytes);
             using (var memoryStream = new MemoryStream())
             using (var streamWriter = new StreamWriter(memoryStream))
             {
                 streamWriter.Write(json);
                 streamWriter.Flush();
                 memoryStream.Position = 0;
-                SetKvPair(memoryStream);
+                var parser = new JsonConfigurationObjectParser();
+                foreach (var keyValuePair in parser.Parse(memoryStream))
+                    Set(keyValuePair.Key, keyValuePair.Value);
             }
-        }
-
-        private void SetKvPair(Stream stream)
-        {
-            var parser = new JsonConfigurationObjectParser();
-            foreach (var keyValuePair in parser.Parse(stream))
-                Set(keyValuePair.Key, keyValuePair.Value);
         }
     }
 }

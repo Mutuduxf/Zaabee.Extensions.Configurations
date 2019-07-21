@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 using Zaabee.Extensions.Configuration.Consul;
@@ -12,22 +11,22 @@ namespace ZaabeeExtensionsConfigurationConsulTestProject
         public void Test1()
         {
             var configBuilder = new ConfigurationBuilder()
-                .AddConsulFolder(c =>
+                .AddConsul(c =>
                 {
-                    c.Address = new Uri("http://192.168.5.229:8500");
+                    c.Address = new Uri("http://192.168.78.152:8500");
                     c.Datacenter = "dc1";
                     c.WaitTime = TimeSpan.FromSeconds(30);
                 }, folder: "/dev")
-                .AddConsulFile(c =>
+                .AddConsul(c =>
                 {
-                    c.Address = new Uri("http://192.168.5.229:8500");
+                    c.Address = new Uri("http://192.168.78.152:8500");
                     c.Datacenter = "dc1";
                     c.WaitTime = TimeSpan.FromSeconds(30);
-                }, key: "/dev/Redis");
+                }, folder: "/prod", key: "redis");
             var config = configBuilder.Build();
-            var hostCfg = config.GetSection("LogSystemHosts").Get<List<string>>();
-            var mongoCfgUrl = config.GetSection("LogMongo").Get<string>();
-            var mongoCfgDbName = config.GetSection("LogMongoDbName").Get<string>();
+            var a = config.GetSection("a").Get<string>();
+            var b = config.GetSection("b").Get<string>();
+            var redisConn = config.GetSection("redisConn").Get<string>();
         }
     }
 }
