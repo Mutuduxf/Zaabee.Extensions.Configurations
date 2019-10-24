@@ -9,7 +9,6 @@ namespace Zaabee.Extensions.Configuration.Consul
 {
 	internal class JsonConfigurationObjectParser
 	{
-
 		private readonly IDictionary<string, string> _data =
 			new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly Stack<string> _context = new Stack<string>();

@@ -20,9 +20,7 @@ namespace Zaabee.Extensions.Configuration.Consul
             _consulClient = new ConsulClient(configOverride, clientOverride, handlerOverride);
         }
 
-        public IConfigurationProvider Build(IConfigurationBuilder builder)
-        {
-            return new ConsulConfigurationProvider(_consulClient, _folder, _key);
-        }
+        public IConfigurationProvider Build(IConfigurationBuilder builder) =>
+            new ConsulConfigurationProvider(_consulClient, _folder, _key);
     }
 }
