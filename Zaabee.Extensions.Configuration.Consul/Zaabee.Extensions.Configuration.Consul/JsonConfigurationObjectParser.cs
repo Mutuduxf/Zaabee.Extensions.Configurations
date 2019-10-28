@@ -11,6 +11,7 @@ namespace Zaabee.Extensions.Configuration.Consul
 	{
 		private readonly IDictionary<string, string> _data =
 			new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
 		private readonly Stack<string> _context = new Stack<string>();
 		private string _currentPath;
 		private JsonTextReader _reader;
@@ -35,14 +36,9 @@ namespace Zaabee.Extensions.Configuration.Consul
 			foreach (var property in jObject.Properties())
 			{
 				EnterContext(property.Name);
-				VisitProperty(property);
+				VisitToken(property.Value);
 				ExitContext();
 			}
-		}
-
-		private void VisitProperty(JProperty property)
-		{
-			VisitToken(property.Value);
 		}
 
 		private void VisitToken(JToken token)
@@ -52,11 +48,9 @@ namespace Zaabee.Extensions.Configuration.Consul
 				case JTokenType.Object:
 					VisitJObject(token.Value<JObject>());
 					break;
-
 				case JTokenType.Array:
 					VisitArray(token.Value<JArray>());
 					break;
-
 				case JTokenType.None:
 				case JTokenType.Date:
 				case JTokenType.Guid:
@@ -69,7 +63,6 @@ namespace Zaabee.Extensions.Configuration.Consul
 				case JTokenType.Null:
 					VisitPrimitive(token);
 					break;
-
 				case JTokenType.Constructor:
 					throw new NotSupportedException(nameof(JTokenType.Constructor));
 				case JTokenType.Property:
