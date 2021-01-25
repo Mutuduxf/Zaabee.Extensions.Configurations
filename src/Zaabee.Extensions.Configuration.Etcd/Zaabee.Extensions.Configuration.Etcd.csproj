@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0</TargetFrameworks>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>2021.1.0</PackageVersion>
+        <Version>2021.1.0</Version>
+        <Authors>Mutuduxf</Authors>
+        <Company>Mutuduxf</Company>
+        <PackageProjectUrl>https://github.com/Mutuduxf/Zaabee.Extensions.Configurations/tree/master/Zaabee.Extensions.Configuration.Consul</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Description>The configuration extensions base by consul.</Description>
+        <PackageTags>Zaabee configuration extensions consul</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="dotnet-etcd" Version="4.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

@@ -23,18 +23,18 @@ namespace Zaabee.Extensions.Configuration.Consul
         public override void Load()
         {
             var folder = _folder ?? "/";
-            if (!string.IsNullOrWhiteSpace(_key))
-            {
-                var queryResult = _consulClient.KV.Get($"{folder}/{_key}").Result;
-                if (queryResult == null || queryResult.StatusCode != HttpStatusCode.OK || queryResult.Response?.Value == null) return;
-                SetKvPair(queryResult.Response.Value);
-            }
-            else
+            if (string.IsNullOrWhiteSpace(_key))
             {
                 var queryResult = _consulClient.KV.List(_folder).Result;
                 if (queryResult == null || queryResult.StatusCode != HttpStatusCode.OK || queryResult.Response == null) return;
                 foreach (var item in queryResult.Response.Where(p => p.Value != null))
                     SetKvPair(item.Value);
+            }
+            else
+            {
+                var queryResult = _consulClient.KV.Get($"{folder}/{_key}").Result;
+                if (queryResult == null || queryResult.StatusCode != HttpStatusCode.OK || queryResult.Response?.Value == null) return;
+                SetKvPair(queryResult.Response.Value);
             }
         }
 

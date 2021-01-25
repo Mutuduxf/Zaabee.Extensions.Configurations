@@ -63,18 +63,12 @@ namespace Zaabee.Extensions.Configuration.Consul
 				case JTokenType.Null:
 					VisitPrimitive(token);
 					break;
-				case JTokenType.Constructor:
-					throw new NotSupportedException(nameof(JTokenType.Constructor));
-				case JTokenType.Property:
-					throw new NotSupportedException(nameof(JTokenType.Property));
-				case JTokenType.Comment:
-					throw new NotSupportedException(nameof(JTokenType.Comment));
-				case JTokenType.Undefined:
-					throw new NotSupportedException(nameof(JTokenType.Undefined));
-				case JTokenType.Uri:
-					throw new NotSupportedException(nameof(JTokenType.Uri));
-				case JTokenType.TimeSpan:
-					throw new NotSupportedException(nameof(JTokenType.TimeSpan));
+				case JTokenType.Constructor: throw new NotSupportedException(nameof(JTokenType.Constructor));
+				case JTokenType.Property: throw new NotSupportedException(nameof(JTokenType.Property));
+				case JTokenType.Comment: throw new NotSupportedException(nameof(JTokenType.Comment));
+				case JTokenType.Undefined: throw new NotSupportedException(nameof(JTokenType.Undefined));
+				case JTokenType.Uri: throw new NotSupportedException(nameof(JTokenType.Uri));
+				case JTokenType.TimeSpan: throw new NotSupportedException(nameof(JTokenType.TimeSpan));
 				default:
 					throw new FormatException(
 						$"Unsupported JSON token '{_reader.TokenType}' was found. Path '{_reader.Path}', line {_reader.LineNumber} position {_reader.LinePosition}.");
@@ -94,10 +88,7 @@ namespace Zaabee.Extensions.Configuration.Consul
 		private void VisitPrimitive(JToken data)
 		{
 			var key = _currentPath;
-
-			if (_data.ContainsKey(key))
-				throw new FormatException($"A duplicate key '{key}' was found.");
-
+			if (_data.ContainsKey(key)) throw new FormatException($"A duplicate key '{key}' was found.");
 			_data[key] = data.ToString();
 		}
 
